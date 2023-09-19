@@ -53,7 +53,7 @@ static int cmd_s(char* args){
 }
 
 static int cmd_r(char* args){
-  // TODO: implement this function
+  isa_reg_display();
   return 0;
 }
 
