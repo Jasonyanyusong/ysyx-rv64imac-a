@@ -48,7 +48,12 @@ static int cmd_c(char *args) {
 }
 
 static int cmd_s(char* args){
-  // TODO: implement this function
+  if(args == NULL){
+    cpu_exec(1);
+  }else{
+    int steps = atoi(args);
+    cpu_exec(steps);
+  }
   return 0;
 }
 
