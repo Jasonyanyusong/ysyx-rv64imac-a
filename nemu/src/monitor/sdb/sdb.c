@@ -47,6 +47,21 @@ static int cmd_c(char *args) {
   return 0;
 }
 
+static int cmd_s(char* args){
+  // TODO: implement this function
+  return 0;
+}
+
+static int cmd_r(char* args){
+  // TODO: implement this function
+  return 0;
+}
+
+static int cmd_m(char* args){
+  // TODO: implement this function
+  return 0;
+}
+
 
 static int cmd_q(char *args) {
   return -1;
@@ -62,9 +77,9 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
-  /* TODO: Add more commands */
-
+  { "s", "Single step execution", cmd_s},
+  { "r", "Print Registers", cmd_r},
+  { "m", "Print Memory", cmd_m},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
