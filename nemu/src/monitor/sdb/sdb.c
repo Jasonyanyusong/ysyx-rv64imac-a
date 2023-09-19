@@ -18,6 +18,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include "memory/paddr.h"
+#include "memory/vaddr.h"
 
 static int is_batch_mode = false;
 
@@ -62,11 +64,31 @@ static int cmd_r(char* args){
   return 0;
 }
 
-static int cmd_m(char* args){
-  // TODO: implement this function
+static int cmd_p(char* args){
+  assert(args);
+  paddr_t start_addr = -1;
+  int steps = -1;
+  sscanf(args, "%d 0x%x", &steps, &start_addr);
+  assert(start_addr >= 0);
+  assert(steps >= 0);
+  for(int i = 0; i < steps; i = i + 1){
+    printf("pmem @ 0x%x -> 0x%lx\n", (start_addr + 4 * i), paddr_read((start_addr + 4 * i), 4));
+  }
   return 0;
 }
 
+static int cmd_v(char* args){
+  assert(args);
+  vaddr_t start_addr = -1;
+  int steps = -1;
+  sscanf(args, "%d 0x%lx", &steps, &start_addr);
+  assert(start_addr >= 0);
+  assert(steps >= 0);
+  for(int i = 0; i < steps; i = i + 1){
+    printf("vmem @ 0x%lx -> 0x%lx\n", (start_addr + 4 * i), vaddr_read((start_addr + 4 * i), 4));
+  }
+  return 0;
+}
 
 static int cmd_q(char *args) {
   nemu_state.state = NEMU_QUIT;
@@ -85,7 +107,8 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
   { "s", "Single step execution", cmd_s},
   { "r", "Print Registers", cmd_r},
-  { "m", "Print Memory", cmd_m},
+  { "p", "Print Phys Memory", cmd_p},
+  { "v", "Print Virt Memory", cmd_v}
 };
 
 #define NR_CMD ARRLEN(cmd_table)
