@@ -129,6 +129,8 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 111 ????? 01110 11", remuw  , R, R(rd) = SEXT((word_t)src1 % (word_t)src2, 32));
 
   // RV64A
+  INSTPAT("00010?? 00000 ????? 010 ????? 01011 11", lr.w   , R, R(rd) = SEXT(Mr(src1 ,4), 32));
+  INSTPAT("00011?? 00000 ????? 010 ????? 01011 11", sc.w   , R, Mw(src1, 4, src2), R(rd) = 0);
 
   // RV64C
 
