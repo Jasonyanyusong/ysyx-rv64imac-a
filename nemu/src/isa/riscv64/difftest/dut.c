@@ -18,7 +18,21 @@
 #include "../local-include/reg.h"
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
-  return false;
+  // Check RISC-V GPR
+  for(int i = 0; i < 32; i = i + 1){
+    if(ref_r -> gpr[i] != cpu.gpr[i]){
+      Log("Difftest failed at GPR[%d], correct = 0x%lx, wrong = 0x%lx", i, ref_r -> gpr[i], cpu.gpr[i]);
+      return false;
+    }
+  }
+
+  // Check RISC-V PC
+  if(ref_r -> pc != cpu.pc){
+    Log("Difftest failed at PC, correct = 0x%lx, wrong = 0x%lx", ref_r -> pc, cpu.pc);
+    return false;
+  }
+
+  return true;
 }
 
 void isa_difftest_attach() {
