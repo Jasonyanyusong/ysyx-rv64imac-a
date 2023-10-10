@@ -129,8 +129,28 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 111 ????? 01110 11", remuw  , R, R(rd) = SEXT((word_t)src1 % (word_t)src2, 32));
 
   // RV64A
-  INSTPAT("00010?? 00000 ????? 010 ????? 01011 11", lr.w   , R, R(rd) = SEXT(Mr(src1 ,4), 32));
-  INSTPAT("00011?? 00000 ????? 010 ????? 01011 11", sc.w   , R, Mw(src1, 4, src2), R(rd) = 0);
+  INSTPAT("00010?? 00000 ????? 010 ????? 01011 11", lr.w     , R, R(rd) = SEXT(Mr(src1 ,4), 32));
+  INSTPAT("00011?? 00000 ????? 010 ????? 01011 11", sc.w     , R, Mw(src1, 4, src2), R(rd) = 0);
+  INSTPAT("00001?? 00000 ????? 010 ????? 01011 11", amoswap.w, R, R(rd) = SEXT(Mr(src1, 4), 32), Mw(src1, 4, BITS(src2, 31, 0)));
+  INSTPAT("00000?? 00000 ????? 010 ????? 01011 11", amoadd.w , R, R(rd) = SEXT(Mr(src1, 4), 32), Mw(src1, 4, BITS(Mr(src1, 4) + src2, 31, 0)));
+  INSTPAT("00100?? 00000 ????? 010 ????? 01011 11", amoxor.w , R, R(rd) = SEXT(Mr(src1, 4), 32), Mw(src1, 4, BITS(Mr(src1, 4) ^ src2, 31, 0)));
+  INSTPAT("01100?? 00000 ????? 010 ????? 01011 11", amoand.w , R, R(rd) = SEXT(Mr(src1, 4), 32), Mw(src1, 4, BITS(Mr(src1, 4) & src2, 31, 0)));
+  INSTPAT("01000?? 00000 ????? 010 ????? 01011 11", amoor.w  , R, R(rd) = SEXT(Mr(src1, 4), 32), Mw(src1, 4, BITS(Mr(src1, 4) | src2, 31, 0)));
+  INSTPAT("10000?? 00000 ????? 010 ????? 01011 11", amomin.w , R, R(rd) = SEXT(Mr(src1, 4), 32), Mw(src1, 4, BITS((signed)Mr(src1, 4) <= (signed)src2 ? Mr(src1, 4) : src2, 31, 0)));
+  INSTPAT("10100?? 00000 ????? 010 ????? 01011 11", amomax.w , R, R(rd) = SEXT(Mr(src1, 4), 32), Mw(src1, 4, BITS((signed)Mr(src1, 4) >= (signed)src2 ? Mr(src1, 4) : src2, 31, 0)));
+  INSTPAT("11000?? 00000 ????? 010 ????? 01011 11", amominu.w, R, R(rd) = SEXT(Mr(src1, 4), 32), Mw(src1, 4, BITS((unsigned)Mr(src1, 4) <= (unsigned)src2 ? Mr(src1, 4) : src2, 31, 0)));
+  INSTPAT("11100?? 00000 ????? 010 ????? 01011 11", amomaxu.w, R, R(rd) = SEXT(Mr(src1, 4), 32), Mw(src1, 4, BITS((unsigned)Mr(src1, 4) >= (unsigned)src2 ? Mr(src1, 4) : src2, 31, 0)));
+  INSTPAT("00010?? 00000 ????? 011 ????? 01011 11", lr.d     , R, R(rd) = Mr(src1 ,8));
+  INSTPAT("00011?? 00000 ????? 011 ????? 01011 11", sc.d     , R, Mw(src1, 8, src2), R(rd) = 0);
+  INSTPAT("00001?? 00000 ????? 011 ????? 01011 11", amoswap.d, R, R(rd) = Mr(src1, 8), Mw(src1, 8, src2));
+  INSTPAT("00000?? 00000 ????? 011 ????? 01011 11", amoadd.d , R, R(rd) = Mr(src1, 8), Mw(src1, 8, Mr(src1, 8) + src2));
+  INSTPAT("00100?? 00000 ????? 011 ????? 01011 11", amoxor.d , R, R(rd) = Mr(src1, 8), Mw(src1, 8, Mr(src1, 8) ^ src2));
+  INSTPAT("01100?? 00000 ????? 011 ????? 01011 11", amoand.d , R, R(rd) = Mr(src1, 8), Mw(src1, 8, Mr(src1, 8) & src2));
+  INSTPAT("01000?? 00000 ????? 011 ????? 01011 11", amoor.d  , R, R(rd) = Mr(src1, 8), Mw(src1, 8, Mr(src1, 8) | src2));
+  INSTPAT("10000?? 00000 ????? 011 ????? 01011 11", amomin.d , R, R(rd) = Mr(src1, 8), Mw(src1, 8, (sword_t)Mr(src1, 8) <= (sword_t)src2 ? Mr(src1, 8) : src2));
+  INSTPAT("10100?? 00000 ????? 011 ????? 01011 11", amomax.d , R, R(rd) = Mr(src1, 8), Mw(src1, 8, (sword_t)Mr(src1, 8) >= (sword_t)src2 ? Mr(src1, 8) : src2));
+  INSTPAT("11000?? 00000 ????? 011 ????? 01011 11", amominu.d, R, R(rd) = Mr(src1, 8), Mw(src1, 8, (word_t)Mr(src1, 8) <= (word_t)src2 ? Mr(src1, 8) : src2));
+  INSTPAT("11100?? 00000 ????? 011 ????? 01011 11", amomaxu.d, R, R(rd) = Mr(src1, 8), Mw(src1, 8, (word_t)Mr(src1, 8) >= (word_t)src2 ? Mr(src1, 8) : src2));
 
   // RV64C
 
