@@ -21,7 +21,7 @@
 #include "memory/paddr.h"
 #include "memory/vaddr.h"
 
-static int is_batch_mode = false;
+static int is_batch_mode = MUXDEF(CONFIG_BATCHMODE, true, false);
 
 void init_regex();
 void init_wp_pool();
